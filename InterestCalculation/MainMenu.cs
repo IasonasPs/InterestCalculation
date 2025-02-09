@@ -4,7 +4,7 @@ using Spectre.Console;
 
 
 namespace InterestCalculation;
-public static class MenuHandler
+public static class MainMenu
 {
     // Define the minimum allowed start date (21/08/1946)
     private static readonly DateOnly MinStartDate = new DateOnly(1946, 8, 21);
