@@ -12,21 +12,21 @@ public static class MenuHandler
     private static readonly  string url = @"https://www.bankofgreece.gr/statistika/xrhmatopistwtikes-agores/ekswtrapezika-epitokia";
     public static void Conductor()
     {
-        var tableRows = HtmlDataExtractor.ExtractFromWebPage(url);
+        Dictionary<int, (DateOnly start, DateOnly end, (decimal legal, decimal delay))>? tableRows = HtmlDataExtractor.ExtractFromWebPage(url);
 
-        //var input = GetUserInput();
-        var input = (StartDate: DateOnly.Parse("1979-09-22"), EndDate: DateOnly.Parse("1979-10-19"), amount: 100);
+        var input = GetUserInput();
+        //var input = (StartDate: DateOnly.Parse("1979-09-22"), EndDate: DateOnly.Parse("1979-10-19"), amount: 100);
 
-        var daysAndInterests = PerformCalculations.CalculateDaysAndInterestsInRange(tableRows, input.StartDate, input.EndDate);
+        var daysAndInterestrates = PerformCalculations.CalculateYearlyDaysAndInterests(tableRows, input.StartDate, input.EndDate);
 
-        var interestRates = PerformCalculations.CalculateInterestPerDateRange(daysAndInterests);
+        var interestRates = PerformCalculations.CalculateInterestPerDateRange(daysAndInterestrates);
 
         var interestAmounts = ComputeInterestAmounts(input, interestRates);
 
-        RenderResultTables(input, daysAndInterests, interestAmounts);
+        RenderResultTables(input, daysAndInterestrates, interestAmounts);
     }
 
-    private static void RenderResultTables((DateOnly StartDate, DateOnly EndDate, decimal amount) input, List<(int, decimal, decimal)> daysAndInterests, List<(decimal, decimal)> interestAmounts)
+    private static void RenderResultTables((DateOnly StartDate, DateOnly EndDate, decimal amount) input, List<(int year, int days, decimal legal, decimal delay)> daysAndInterests, List<(decimal, decimal)> interestAmounts)
     {
         Table resultsTable = new();
         resultsTable.AddColumn("Start Date");
@@ -43,10 +43,10 @@ public static class MenuHandler
             resultsTable.AddRow(
                 input.StartDate.ToString(),
                 input.EndDate.ToString(),
-                daysAndInterests[i].Item1.ToString().TrimEnd('0'),
-                daysAndInterests[i].Item2.ToString() + "%",
+                daysAndInterests[i].days.ToString().TrimEnd('0'),
+                daysAndInterests[i].legal.ToString() + "%",
                 item.Item1.ToString().TrimEnd('0'),
-                daysAndInterests[i].Item3.ToString() + "%",
+                daysAndInterests[i].delay.ToString() + "%",
                 item.Item2.ToString().TrimEnd('0'));
         }
         AnsiConsole.Write(resultsTable);

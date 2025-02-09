@@ -6,10 +6,10 @@ namespace InterestCalculation.Utilities
     {
         static Dictionary<int, (DateOnly, DateOnly, (decimal, decimal))>? keys;
 
-        public static Dictionary<int, (DateOnly, DateOnly, (decimal, decimal))> ExtractFromWebPage(string html)
+        public static Dictionary<int, (DateOnly startDate, DateOnly endDate, (decimal legal, decimal delay))> ExtractFromWebPage(string html)
         {
             HtmlWeb web = new HtmlWeb();
-            HtmlDocument htmlDoc = null;
+            HtmlDocument htmlDoc;
 
             try
             {
