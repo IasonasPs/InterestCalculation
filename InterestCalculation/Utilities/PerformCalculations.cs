@@ -60,11 +60,11 @@ namespace InterestCalculation.Utilities
             return daysAndInterests;
         }
 
-        public static List<(int year, int days, decimal legalInterest, decimal delayInterest)> CalculateYearlyDaysAndInterests(
-                Dictionary<int, (DateOnly start, DateOnly end, (decimal legal, decimal delay) rates)> tableRecords,
-                        DateOnly startDate, DateOnly endDate)
+        public static List<(int year, int days, decimal legal, decimal delay, DateOnly startDate, DateOnly endDate)> CalculateYearlyDaysAndInterests(
+    Dictionary<int, (DateOnly start, DateOnly end, (decimal legal, decimal delay) rates)> tableRecords,
+    DateOnly startDate, DateOnly endDate)
         {
-            List<(int year, int days, decimal legal, decimal delay)> daysAndInterests = new();
+            List<(int year, int days, decimal legal, decimal delay, DateOnly startDate, DateOnly endDate)> daysAndInterests = new();
 
             foreach (var record in tableRecords)
             {
@@ -78,7 +78,7 @@ namespace InterestCalculation.Utilities
                 {
                     //only 1 day in this record
                     days = 1;
-                    daysAndInterests.Add((record.Value.end.Year, days, record.Value.rates.legal, record.Value.rates.delay));
+                    daysAndInterests.Add((record.Value.end.Year, days, record.Value.rates.legal, record.Value.rates.delay, startDate, record.Value.end));
                     break;
                 }
                 else
@@ -101,8 +101,12 @@ namespace InterestCalculation.Utilities
             return daysAndInterests;
         }
 
+
         private static int CalculateDaysForDifferentYears(
-            DateOnly startDate, DateOnly endDate, List<(int year, int days, decimal legal, decimal delay)> daysAndInterests, KeyValuePair<int, (DateOnly Start, DateOnly End, (decimal Legal, decimal Delay) Rates)> record, int days)
+     DateOnly startDate, DateOnly endDate,
+     List<(int year, int days, decimal legal, decimal delay, DateOnly startDate, DateOnly endDate)> daysAndInterests,
+     KeyValuePair<int, (DateOnly Start, DateOnly End, (decimal Legal, decimal Delay) Rates)> record,
+     int days)
         {
             DateOnly tempStartDate = startDate;
 
@@ -110,14 +114,14 @@ namespace InterestCalculation.Utilities
             {
                 // If the range is within the same year, calculate normally
                 days = (endDate.ToDateTime(TimeOnly.MinValue) - startDate.ToDateTime(TimeOnly.MinValue)).Days + 1;
-                daysAndInterests.Add((startDate.Year, days, record.Value.Rates.Legal, record.Value.Rates.Delay));
+                daysAndInterests.Add((startDate.Year, days, record.Value.Rates.Legal, record.Value.Rates.Delay, startDate, endDate));
             }
             else
             {
                 // First year: from startDate to the end of that year
                 DateOnly endOfYear = new DateOnly(tempStartDate.Year, 12, 31);
                 int firstYearDays = (endOfYear.ToDateTime(TimeOnly.MinValue) - tempStartDate.ToDateTime(TimeOnly.MinValue)).Days + 1;
-                daysAndInterests.Add((tempStartDate.Year, firstYearDays, record.Value.Rates.Legal, record.Value.Rates.Delay));
+                daysAndInterests.Add((tempStartDate.Year, firstYearDays, record.Value.Rates.Legal, record.Value.Rates.Delay, tempStartDate, endOfYear));
 
                 // Move tempStartDate to the next year
                 tempStartDate = new DateOnly(tempStartDate.Year + 1, 1, 1);
@@ -126,19 +130,21 @@ namespace InterestCalculation.Utilities
                 while (tempStartDate.Year < endDate.Year)
                 {
                     int fullYearDays = DateTime.IsLeapYear(tempStartDate.Year) ? 366 : 365;
-                    daysAndInterests.Add((tempStartDate.Year, fullYearDays, record.Value.Rates.Legal, record.Value.Rates.Delay));
+                    DateOnly yearEnd = new DateOnly(tempStartDate.Year, 12, 31);
+                    daysAndInterests.Add((tempStartDate.Year, fullYearDays, record.Value.Rates.Legal, record.Value.Rates.Delay, tempStartDate, yearEnd));
                     tempStartDate = new DateOnly(tempStartDate.Year + 1, 1, 1);
                 }
 
                 // Last year: from start of the last year to endDate
                 int lastYearDays = (endDate.ToDateTime(TimeOnly.MinValue) - tempStartDate.ToDateTime(TimeOnly.MinValue)).Days + 1;
-                daysAndInterests.Add((tempStartDate.Year, lastYearDays, record.Value.Rates.Legal, record.Value.Rates.Delay));
+                daysAndInterests.Add((tempStartDate.Year, lastYearDays, record.Value.Rates.Legal, record.Value.Rates.Delay, tempStartDate, endDate));
             }
 
             return days;
         }
 
-        public static List<(decimal, decimal)> CalculateInterestPerDateRange(List<(int year, int days, decimal legal, decimal delay)> daysAndInterests)
+
+        public static List<(decimal, decimal)> CalculateInterestPerDateRange(List<(int year, int days, decimal legal, decimal delay, DateOnly startDate, DateOnly endDate)>? daysAndInterests)
         {
             List<(decimal, decimal)> interests = new();
 
@@ -151,7 +157,8 @@ namespace InterestCalculation.Utilities
             return interests;
         }
 
-        private static void DetermineInterest((int year, int days, decimal legal, decimal delay) daysAndInterest, out decimal legalInterest, out decimal delayInterest)
+
+        private static void DetermineInterest((int year, int days, decimal legal, decimal delay, DateOnly startDate, DateOnly endDate) daysAndInterest, out decimal legalInterest, out decimal delayInterest)
         {
             var isLeapYear = DateTime.IsLeapYear(daysAndInterest.year);
             decimal daysFraction;

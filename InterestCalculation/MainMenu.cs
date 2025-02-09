@@ -14,19 +14,19 @@ public static class MenuHandler
     {
         Dictionary<int, (DateOnly start, DateOnly end, (decimal legal, decimal delay))>? tableRows = HtmlDataExtractor.ExtractFromWebPage(url);
 
-        var input = GetUserInput();
-        //var input = (StartDate: DateOnly.Parse("1979-09-22"), EndDate: DateOnly.Parse("1979-10-19"), amount: 100);
+        //var input = GetUserInput();
+        var input = (StartDate: DateOnly.Parse("1979-09-22"), EndDate: DateOnly.Parse("1979-10-19"), amount: 100);
 
-        var daysAndInterestrates = PerformCalculations.CalculateYearlyDaysAndInterests(tableRows, input.StartDate, input.EndDate);
+        List<(int year, int days, decimal legal, decimal delay, DateOnly startDate, DateOnly endDate)>? daysAndRatesList = PerformCalculations.CalculateYearlyDaysAndInterests(tableRows, input.StartDate, input.EndDate);
 
-        var interestRates = PerformCalculations.CalculateInterestPerDateRange(daysAndInterestrates);
+        var interestRates = PerformCalculations.CalculateInterestPerDateRange(daysAndRatesList);
 
         var interestAmounts = ComputeInterestAmounts(input, interestRates);
 
-        RenderResultTables(input, daysAndInterestrates, interestAmounts);
+        RenderResultTables(input, daysAndRatesList, interestAmounts);
     }
 
-    private static void RenderResultTables((DateOnly StartDate, DateOnly EndDate, decimal amount) input, List<(int year, int days, decimal legal, decimal delay)> daysAndInterests, List<(decimal, decimal)> interestAmounts)
+    private static void RenderResultTables((DateOnly StartDate, DateOnly EndDate, decimal amount) input, List<(int year, int days, decimal legal, decimal delay, DateOnly startDate, DateOnly endDate)> daysAndInterests, List<(decimal, decimal)> interestAmounts)
     {
         Table resultsTable = new();
         resultsTable.AddColumn("Start Date");
@@ -41,8 +41,8 @@ public static class MenuHandler
         {
             (decimal, decimal) item = interestAmounts[i];
             resultsTable.AddRow(
-                input.StartDate.ToString(),
-                input.EndDate.ToString(),
+                daysAndInterests[i].startDate.ToString(),
+                daysAndInterests[i].endDate.ToString(),
                 daysAndInterests[i].days.ToString().TrimEnd('0'),
                 daysAndInterests[i].legal.ToString() + "%",
                 item.Item1.ToString().TrimEnd('0'),
