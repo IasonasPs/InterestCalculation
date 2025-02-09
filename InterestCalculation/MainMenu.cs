@@ -6,13 +6,16 @@ using Spectre.Console;
 namespace InterestCalculation;
 public static class MainMenu
 {
-    // Define the minimum allowed start date (21/08/1946)
+    //Define the minimum allowed start date (21/08/1946)
     private static readonly DateOnly MinStartDate = new DateOnly(1946, 8, 21);
-    // Define the URL of the Bank of Greece page
+    //Define the URL of the Bank of Greece page
     private static readonly  string url = @"https://www.bankofgreece.gr/statistika/xrhmatopistwtikes-agores/ekswtrapezika-epitokia";
-    public static void Conductor()
+
+    //This is the main method that orchestrates the whole process, it calls the other methods to get the user input,
+    //calculates the interest rates and displays the results
+    public static void Conductor() 
     {
-        Dictionary<int, (DateOnly start, DateOnly end, (decimal legal, decimal delay))>? tableRows = HtmlDataExtractor.ExtractFromWebPage(url);
+        Dictionary<int, (DateOnly start, DateOnly end, (decimal legal, decimal delay))>? tableRows = HtmlDataExtractor.ExtractDataFromWebPage(url);
 
         //var input = GetUserInput();
         var input = (StartDate: DateOnly.Parse("1979-09-22"), EndDate: DateOnly.Parse("1979-10-19"), amount: 100);
@@ -103,7 +106,7 @@ public static class MainMenu
         while (true)
         {
             Console.Write(prompt);
-            string input = Console.ReadLine();
+            string? input = Console.ReadLine();
             if (DateOnly.TryParseExact(input, "yyyy-MM-dd",
                 CultureInfo.InvariantCulture, DateTimeStyles.None, out DateOnly date))
             {
@@ -130,7 +133,7 @@ public static class MainMenu
         while (true)
         {
             Console.Write(prompt);
-            string input = Console.ReadLine();
+            string? input = Console.ReadLine();
             if (decimal.TryParse(input, NumberStyles.Number,
                 CultureInfo.InvariantCulture, out decimal amount))
             {

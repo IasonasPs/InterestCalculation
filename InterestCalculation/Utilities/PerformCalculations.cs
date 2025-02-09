@@ -103,8 +103,7 @@ namespace InterestCalculation.Utilities
 
 
         private static int CalculateDaysForDifferentYears(
-     DateOnly startDate, DateOnly endDate,
-     List<(int year, int days, decimal legal, decimal delay, DateOnly startDate, DateOnly endDate)> daysAndInterests,
+     DateOnly startDate, DateOnly endDate, List<(int year, int days, decimal legal, decimal delay, DateOnly startDate, DateOnly endDate)> daysAndInterests,
      KeyValuePair<int, (DateOnly Start, DateOnly End, (decimal Legal, decimal Delay) Rates)> record,
      int days)
         {
