@@ -1,7 +1,7 @@
 
 # InterestCalculation
 
-A C# project designed to calculate different types of interest.
+A C# project in **.NET 8.0**  designed to calculate various types of interest.
 
 ## Features
 - Provides methods for calculating both **Legal** and **delay** interest.
