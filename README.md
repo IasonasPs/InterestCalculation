@@ -8,7 +8,7 @@ A C# project designed to calculate different types of interest.
 - Can be easily extended for other financial calculations.
 
 ## Conclusions
-   - This project was initially designed with **memory efficiency** and **speed** in mind, which is why that **tuples** were used extensively.
+   - This project was initially designed with **memory efficiency** and **speed** in mind, which is why **tuples** were used extensively.
    - While tuples as value types, do offer memory efficiency and reduced overhead , the use of custom classes -or even better, records-
    would enhance readability and maintanability in the long run. 
 
