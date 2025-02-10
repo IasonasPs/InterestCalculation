@@ -17,8 +17,8 @@ public static class MainMenu
     {
         Dictionary<int, (DateOnly start, DateOnly end, (decimal legal, decimal delay))>? tableRows = HtmlDataExtractor.ExtractDataFromWebPage(url);
 
-        //var input = GetUserInput();
-        var input = (StartDate: DateOnly.Parse("1979-09-22"), EndDate: DateOnly.Parse("1979-10-19"), amount: 100);
+        var input = GetUserInput();
+        //var input = (StartDate: DateOnly.Parse("1979-09-22"), EndDate: DateOnly.Parse("1979-10-19"), amount: 100);
 
         List<(int year, int days, decimal legal, decimal delay, DateOnly startDate, DateOnly endDate)>? daysAndRatesList = PerformCalculations.CalculateYearlyDaysAndInterests(tableRows, input.StartDate, input.EndDate);
 
