@@ -9,24 +9,37 @@ public static class MainMenu
     //Define the minimum allowed start date (21/08/1946)
     private static readonly DateOnly MinStartDate = new DateOnly(1946, 8, 21);
     //Define the URL of the Bank of Greece page
-    private static readonly  string url = @"https://www.bankofgreece.gr/statistika/xrhmatopistwtikes-agores/ekswtrapezika-epitokia";
+    private static readonly string url = @"https://www.bankofgreece.gr/statistika/xrhmatopistwtikes-agores/ekswtrapezika-epitokia";
 
     //This is the main method that orchestrates the whole process, it calls the other methods to get the user input,
     //calculates the interest rates and displays the results
-    public static void Conductor() 
+    public static async Task Conductor()
     {
-        Dictionary<int, (DateOnly start, DateOnly end, (decimal legal, decimal delay))>? tableRows = HtmlDataExtractor.ExtractDataFromWebPage(url);
+        try
+        {
+            Dictionary<int, (DateOnly start, DateOnly end, (decimal legal, decimal delay))>? tableRows = await HtmlDataExtractor.ExtractDataFromWebPage(url);
 
-        var input = GetUserInput();
-        //var input = (StartDate: DateOnly.Parse("1979-09-22"), EndDate: DateOnly.Parse("1979-10-19"), amount: 100);
+            if (tableRows == null)
+            {
+                Console.WriteLine("Failed to fetch data from the web page.");
+                return;
+            }
 
-        List<(int year, int days, decimal legal, decimal delay, DateOnly startDate, DateOnly endDate)>? daysAndRatesList = PerformCalculations.CalculateYearlyDaysAndInterests(tableRows, input.StartDate, input.EndDate);
+            var input = GetUserInput();
+            //var input = (StartDate: DateOnly.Parse("1979-09-22"), EndDate: DateOnly.Parse("1979-10-19"), amount: 100);
 
-        var interestRates = PerformCalculations.CalculateInterestPerDateRange(daysAndRatesList);
+            List<(int year, int days, decimal legal, decimal delay, DateOnly startDate, DateOnly endDate)>? daysAndRatesList = PerformCalculations.CalculateYearlyDaysAndInterests(tableRows, input.StartDate, input.EndDate);
 
-        var interestAmounts = ComputeInterestAmounts(input, interestRates);
+            var interestRates = PerformCalculations.CalculateInterestPerDateRange(daysAndRatesList);
 
-        RenderResultTables(input, daysAndRatesList, interestAmounts);
+            var interestAmounts = ComputeInterestAmounts(input, interestRates);
+
+            RenderResultTables(input, daysAndRatesList, interestAmounts);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
     }
 
     private static void RenderResultTables((DateOnly StartDate, DateOnly EndDate, decimal amount) input, List<(int year, int days, decimal legal, decimal delay, DateOnly startDate, DateOnly endDate)> daysAndInterests, List<(decimal, decimal)> interestAmounts)

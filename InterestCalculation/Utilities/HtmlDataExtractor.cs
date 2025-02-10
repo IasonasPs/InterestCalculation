@@ -6,19 +6,19 @@ namespace InterestCalculation.Utilities
     {
         static Dictionary<int, (DateOnly, DateOnly, (decimal, decimal))>? keys;
 
-        public static Dictionary<int, (DateOnly startDate, DateOnly endDate, (decimal legal, decimal delay))> ExtractDataFromWebPage(string html)
+        public static async Task<Dictionary<int, (DateOnly startDate, DateOnly endDate, (decimal legal, decimal delay))>> ExtractDataFromWebPage(string html)
         {
             HtmlWeb web = new HtmlWeb();
             HtmlDocument htmlDoc;
 
             try
             {
-                htmlDoc = web.Load(html);
+                htmlDoc = await web.LoadFromWebAsync(html); 
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                return null;
+                throw;
             }
 
             var tableRows = htmlDoc.DocumentNode.SelectNodes("//table//tbody//tr");
