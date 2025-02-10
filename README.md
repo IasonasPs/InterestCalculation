@@ -15,8 +15,8 @@ A C# project in **.NET 8.0**  designed to calculate various types of interest.
 ## Dependencies
 
   ### This project utilizes the following NuGet packages:
-
-HtmlAgilityPack (Version 1.11.72)
+   
+   _ HtmlAgilityPack (Version 1.11.72)
 
 A powerful library for parsing and manipulating HTML documents.
 
