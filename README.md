@@ -7,11 +7,6 @@ A C# project in **.NET 8.0**  designed to calculate various types of interest.
 - Provides methods for calculating both **Legal** and **delay** interest.
 - Can be easily extended for other financial calculations.
 
-## Conclusions
-   - This project was initially designed with **memory efficiency** and **speed** in mind, which is why **tuples** were used extensively.
-   - While tuples as value types, do offer memory efficiency and reduced overhead , the use of custom classes -or even better, records-
-   would enhance readability and maintanability in the long run.
-
 ## Dependencies
 
 ### This project utilizes the following NuGet packages:
@@ -22,8 +17,12 @@ A C# project in **.NET 8.0**  designed to calculate various types of interest.
 
 2. **Spectre.Console** (Version 0.49.1)  
    - A modern .NET library for creating beautiful console applications.  
-   - Provides rich text formatting, tables, progress bars, prompts, and more.  
-
+   - Provides rich text formatting, tables, progress bars, prompts, and more.
+     
+## Conclusions
+   - This project was initially designed with **memory efficiency** and **speed** in mind, which is why **tuples** were used extensively.
+   - While tuples as value types, do offer memory efficiency and reduced overhead , the use of custom classes -or even better, records-
+   would enhance readability and maintanability in the long run.
 
 ## Installation
 
