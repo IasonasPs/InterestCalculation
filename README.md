@@ -16,13 +16,13 @@ A C# project in **.NET 8.0**  designed to calculate various types of interest.
 
   ### This project utilizes the following NuGet packages:
    
-   _ HtmlAgilityPack (Version 1.11.72)
+   1. HtmlAgilityPack (Version 1.11.72)
 
-A powerful library for parsing and manipulating HTML documents.
+      _ A powerful library for parsing and manipulating HTML documents.
 
-Used for tasks such as web scraping, HTML document modification, and data extraction.
+      _ Used for tasks such as web scraping, HTML document modification, and data extraction.
 
-Spectre.Console (Version 0.49.1)
+   2. Spectre.Console (Version 0.49.1)
 
 A modern .NET library for creating beautiful console applications.
 
